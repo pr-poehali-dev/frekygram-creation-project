@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon';
 import { Card } from '@/components/ui/card';
 
 const Index = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('chats');
   const [selectedChat, setSelectedChat] = useState<number | null>(1);
 
@@ -103,6 +104,51 @@ const Index = () => {
     { id: 3, text: 'Тоже хорошо, спасибо! 😊', sender: 'them', time: '14:22', reactions: ['😊'] },
     { id: 4, text: 'Готов к завтрашней встрече?', sender: 'them', time: '14:23', reactions: [] },
   ];
+
+  if (!isLoggedIn) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div className="max-w-md w-full px-6">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4">💬</div>
+            <h1 className="text-4xl font-bold text-gradient mb-3" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              Frekygramm
+            </h1>
+            <p className="text-muted-foreground text-lg">Премиум мессенджер нового поколения</p>
+          </div>
+          
+          <div className="space-y-3">
+            <Button
+              onClick={() => setIsLoggedIn(true)}
+              className="w-full h-14 text-lg gradient-primary text-white shadow-xl hover:shadow-2xl transition-all"
+            >
+              <Icon name="MessageCircle" size={24} className="mr-2" />
+              Начать общение
+            </Button>
+            <Button
+              onClick={() => setIsLoggedIn(true)}
+              variant="outline"
+              className="w-full h-14 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
+            >
+              <Icon name="LogIn" size={24} className="mr-2" />
+              Продолжить общаться
+            </Button>
+          </div>
+          
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <Badge className="gradient-primary text-white">
+              <Icon name="Crown" size={14} className="mr-1" />
+              Premium доступен
+            </Badge>
+            <Badge className="gradient-accent text-white">
+              <Icon name="Zap" size={14} className="mr-1" />
+              Быстро и надежно
+            </Badge>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-background" style={{ fontFamily: 'Inter, sans-serif' }}>
