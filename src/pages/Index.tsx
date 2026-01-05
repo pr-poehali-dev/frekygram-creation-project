@@ -15,6 +15,17 @@ const Index = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [hasPremium, setHasPremium] = useState(false);
   const [selectedBackground, setSelectedBackground] = useState('dark');
+  const [tirkenBalance, setTirkenBalance] = useState(0);
+  const [language, setLanguage] = useState('ru');
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [notificationSound, setNotificationSound] = useState('default');
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: 'Мой Профиль',
+    username: 'myusername',
+    bio: 'Пользователь Frekygramm Premium',
+    avatar: '🚀'
+  });
 
   const chats = [
     {
@@ -377,23 +388,52 @@ const Index = () => {
             {activeTab === 'profile' && (
               <div className="p-6">
                 <div className="flex flex-col items-center gap-4 mb-6">
-                  <div className="relative">
-                    <Avatar className="w-24 h-24">
-                      <AvatarFallback className="text-4xl">🚀</AvatarFallback>
+                  <div className="relative cursor-pointer group" onClick={() => setShowProfileEdit(true)}>
+                    <Avatar className="w-24 h-24 group-hover:opacity-80 transition-opacity">
+                      <AvatarFallback className="text-4xl">{profileData.avatar}</AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-4 border-card"></div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Icon name="Camera" className="text-white" size={24} />
+                    </div>
                   </div>
                   <div className="text-center">
                     <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Мой Профиль
+                      {profileData.name}
                     </h2>
-                    <p className="text-sm text-muted-foreground">@myusername</p>
+                    <p className="text-sm text-muted-foreground">@{profileData.username}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{profileData.bio}</p>
                   </div>
                   <Badge className="gradient-primary text-white">
                     <Icon name="Crown" size={14} className="mr-1" />
                     Premium Active
                   </Badge>
+                  <Button 
+                    onClick={() => setShowProfileEdit(true)}
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    <Icon name="Edit" size={16} className="mr-2" />
+                    Редактировать профиль
+                  </Button>
                 </div>
+
+                <Card className="p-4 mb-4 gradient-accent">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white/80 text-sm mb-1">Баланс Tirken</p>
+                      <p className="text-white font-bold text-2xl">{tirkenBalance} TRK</p>
+                    </div>
+                    <div className="text-4xl">💎</div>
+                  </div>
+                  <Button 
+                    onClick={() => setTirkenBalance(tirkenBalance + 150)}
+                    className="w-full mt-3 bg-white hover:bg-gray-100 text-black font-semibold"
+                  >
+                    <Icon name="Plus" size={16} className="mr-2" />
+                    Купить 150 TRK за 99₽
+                  </Button>
+                </Card>
 
                 <div className="space-y-2">
                   <Card className="p-4 hover:bg-muted transition-all cursor-pointer">
@@ -618,6 +658,76 @@ const Index = () => {
 
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Icon name="Languages" className="text-accent" size={20} />
+                    Язык интерфейса
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    <Card 
+                      className={`p-3 cursor-pointer transition-all hover:scale-105 ${language === 'ru' ? 'border-2 border-primary' : ''}`}
+                      onClick={() => setLanguage('ru')}
+                    >
+                      <p className="text-2xl text-center mb-1">🇷🇺</p>
+                      <p className="text-sm font-medium text-center">Русский</p>
+                    </Card>
+                    <Card 
+                      className={`p-3 cursor-pointer transition-all hover:scale-105 ${language === 'en' ? 'border-2 border-primary' : ''}`}
+                      onClick={() => setLanguage('en')}
+                    >
+                      <p className="text-2xl text-center mb-1">🇬🇧</p>
+                      <p className="text-sm font-medium text-center">English</p>
+                    </Card>
+                    <Card 
+                      className={`p-3 cursor-pointer transition-all hover:scale-105 ${language === 'es' ? 'border-2 border-primary' : ''}`}
+                      onClick={() => setLanguage('es')}
+                    >
+                      <p className="text-2xl text-center mb-1">🇪🇸</p>
+                      <p className="text-sm font-medium text-center">Español</p>
+                    </Card>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Icon name="Volume2" className="text-yellow-400" size={20} />
+                    Звуковые настройки
+                  </h3>
+                  <Card className="p-4 mb-3">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <Icon name={soundEnabled ? "Volume2" : "VolumeX"} size={20} />
+                        <span className="font-medium">Звуки уведомлений</span>
+                      </div>
+                      <Button
+                        onClick={() => setSoundEnabled(!soundEnabled)}
+                        className={soundEnabled ? "bg-green-500 hover:bg-green-600" : "bg-muted hover:bg-muted"}
+                      >
+                        {soundEnabled ? 'Вкл' : 'Выкл'}
+                      </Button>
+                    </div>
+                    {soundEnabled && (
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground mb-2">Выберите звук</p>
+                        {['default', 'bell', 'chime', 'pop'].map((sound) => (
+                          <div
+                            key={sound}
+                            onClick={() => setNotificationSound(sound)}
+                            className={`p-3 rounded-lg cursor-pointer transition-all ${
+                              notificationSound === sound ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="capitalize">{sound === 'default' ? 'По умолчанию' : sound === 'bell' ? 'Колокольчик' : sound === 'chime' ? 'Перезвон' : 'Хлопок'}</span>
+                              {notificationSound === sound && <Icon name="Check" size={18} />}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </Card>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Icon name="Sparkles" className="text-secondary" size={20} />
                     Дополнительно
                   </h3>
@@ -680,6 +790,102 @@ const Index = () => {
                 </div>
               </div>
             </ScrollArea>
+          </div>
+        </div>
+      )}
+
+      {showProfileEdit && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-3xl shadow-2xl max-w-md w-full">
+            <div className="gradient-primary px-6 py-5 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                Редактировать профиль
+              </h2>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-white hover:bg-white/20"
+                onClick={() => setShowProfileEdit(false)}
+              >
+                <Icon name="X" size={24} />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  <Avatar className="w-32 h-32">
+                    <AvatarFallback className="text-5xl">{profileData.avatar}</AvatarFallback>
+                  </Avatar>
+                  <Button 
+                    size="icon" 
+                    className="absolute bottom-0 right-0 rounded-full gradient-primary"
+                  >
+                    <Icon name="Camera" size={20} />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {['🚀', '😎', '🎨', '🎮', '⚡', '🔥', '💎', '🌟', '🎭', '🎪', '🎯', '🎸'].map((emoji) => (
+                  <Button
+                    key={emoji}
+                    variant={profileData.avatar === emoji ? "default" : "outline"}
+                    className="text-2xl h-14"
+                    onClick={() => setProfileData({...profileData, avatar: emoji})}
+                  >
+                    {emoji}
+                  </Button>
+                ))}
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Имя</label>
+                <Input
+                  value={profileData.name}
+                  onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                  placeholder="Введите имя"
+                  className="bg-muted border-0"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Имя пользователя</label>
+                <Input
+                  value={profileData.username}
+                  onChange={(e) => setProfileData({...profileData, username: e.target.value})}
+                  placeholder="username"
+                  className="bg-muted border-0"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">О себе</label>
+                <Input
+                  value={profileData.bio}
+                  onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                  placeholder="Расскажите о себе"
+                  className="bg-muted border-0"
+                />
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setShowProfileEdit(false)}
+                >
+                  Отмена
+                </Button>
+                <Button 
+                  className="flex-1 gradient-primary text-white"
+                  onClick={() => setShowProfileEdit(false)}
+                >
+                  <Icon name="Check" size={18} className="mr-2" />
+                  Сохранить
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}
