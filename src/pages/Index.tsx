@@ -12,6 +12,9 @@ const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('chats');
   const [selectedChat, setSelectedChat] = useState<number | null>(1);
+  const [showSettings, setShowSettings] = useState(false);
+  const [hasPremium, setHasPremium] = useState(false);
+  const [selectedBackground, setSelectedBackground] = useState('dark');
 
   const chats = [
     {
@@ -166,7 +169,12 @@ const Index = () => {
           <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
             <Icon name="Search" size={20} />
           </Button>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-white hover:bg-white/20"
+            onClick={() => setShowSettings(!showSettings)}
+          >
             <Icon name="Settings" size={20} />
           </Button>
         </div>
@@ -513,6 +521,168 @@ const Index = () => {
           )}
         </div>
       </div>
+
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <div className="gradient-primary px-6 py-5 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                Настройки Frekygramm
+              </h2>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-white hover:bg-white/20"
+                onClick={() => setShowSettings(false)}
+              >
+                <Icon name="X" size={24} />
+              </Button>
+            </div>
+
+            <ScrollArea className="max-h-[calc(90vh-80px)]">
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Icon name="Crown" className="text-yellow-400" size={20} />
+                    Freky Premium
+                  </h3>
+                  <Card className="p-5 gradient-primary">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h4 className="text-white font-bold text-xl mb-1">Premium бесплатно!</h4>
+                        <p className="text-white/80 text-sm">Все функции доступны навсегда</p>
+                      </div>
+                      <div className="text-4xl">👑</div>
+                    </div>
+                    <Button 
+                      onClick={() => setHasPremium(!hasPremium)}
+                      className={`w-full ${hasPremium ? 'bg-green-500 hover:bg-green-600' : 'bg-white hover:bg-gray-100'} text-black font-semibold`}
+                    >
+                      {hasPremium ? (
+                        <>
+                          <Icon name="Check" size={20} className="mr-2" />
+                          Premium активирован
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="Crown" size={20} className="mr-2" />
+                          Активировать Premium
+                        </>
+                      )}
+                    </Button>
+                    {hasPremium && (
+                      <div className="mt-3 flex items-center gap-2 text-white/90 text-sm">
+                        <Icon name="Sparkles" size={16} />
+                        <span>Эксклюзивные стикеры, темы и функции</span>
+                      </div>
+                    )}
+                  </Card>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Icon name="Palette" className="text-primary" size={20} />
+                    Фон и темы
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Card 
+                      className={`p-4 cursor-pointer transition-all hover:scale-105 ${selectedBackground === 'dark' ? 'border-2 border-primary shadow-lg' : ''}`}
+                      onClick={() => setSelectedBackground('dark')}
+                    >
+                      <div className="h-20 rounded-lg bg-gradient-to-br from-gray-900 to-gray-800 mb-3"></div>
+                      <p className="font-medium text-center">Темная тема</p>
+                    </Card>
+                    <Card 
+                      className={`p-4 cursor-pointer transition-all hover:scale-105 ${selectedBackground === 'gradient' ? 'border-2 border-primary shadow-lg' : ''}`}
+                      onClick={() => setSelectedBackground('gradient')}
+                    >
+                      <div className="h-20 rounded-lg gradient-primary mb-3"></div>
+                      <p className="font-medium text-center">Градиент</p>
+                    </Card>
+                    <Card 
+                      className={`p-4 cursor-pointer transition-all hover:scale-105 ${selectedBackground === 'space' ? 'border-2 border-primary shadow-lg' : ''}`}
+                      onClick={() => setSelectedBackground('space')}
+                    >
+                      <div className="h-20 rounded-lg bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 mb-3"></div>
+                      <p className="font-medium text-center">Космос</p>
+                    </Card>
+                    <Card 
+                      className={`p-4 cursor-pointer transition-all hover:scale-105 ${selectedBackground === 'ocean' ? 'border-2 border-primary shadow-lg' : ''}`}
+                      onClick={() => setSelectedBackground('ocean')}
+                    >
+                      <div className="h-20 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 mb-3"></div>
+                      <p className="font-medium text-center">Океан</p>
+                    </Card>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Icon name="Sparkles" className="text-secondary" size={20} />
+                    Дополнительно
+                  </h3>
+                  <div className="space-y-2">
+                    <Card className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted transition-all">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Sticker" className="text-secondary" size={20} />
+                        <div>
+                          <p className="font-medium">Эксклюзивные стикеры</p>
+                          <p className="text-sm text-muted-foreground">1000+ премиум паков</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </Card>
+                    
+                    <Card className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted transition-all">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Bell" className="text-accent" size={20} />
+                        <div>
+                          <p className="font-medium">Уведомления</p>
+                          <p className="text-sm text-muted-foreground">Настроить звуки и вибрацию</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </Card>
+                    
+                    <Card className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted transition-all">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Shield" className="text-green-500" size={20} />
+                        <div>
+                          <p className="font-medium">Приватность и безопасность</p>
+                          <p className="text-sm text-muted-foreground">Шифрование сообщений</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </Card>
+
+                    <Card className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted transition-all">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Zap" className="text-yellow-400" size={20} />
+                        <div>
+                          <p className="font-medium">Анимации и эффекты</p>
+                          <p className="text-sm text-muted-foreground">Настроить интерфейс</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </Card>
+
+                    <Card className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted transition-all">
+                      <div className="flex items-center gap-3">
+                        <Icon name="Download" className="text-primary" size={20} />
+                        <div>
+                          <p className="font-medium">Автозагрузка медиа</p>
+                          <p className="text-sm text-muted-foreground">Фото, видео, файлы</p>
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" className="text-muted-foreground" size={20} />
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
